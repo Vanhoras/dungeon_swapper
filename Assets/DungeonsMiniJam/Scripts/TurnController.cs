@@ -10,6 +10,8 @@ public class TurnTimeController : MonoBehaviour
 
     private DungeonsControls inputActions;
 
+    private bool stopped;
+
     private void Awake()
     {
         if (instance == null)
@@ -45,23 +47,38 @@ public class TurnTimeController : MonoBehaviour
 
     private void OnMoveUp(InputAction.CallbackContext input)
     {
+        if (stopped) return;
         NextTurn.Invoke(PlayerAction.MOVE_UP);
     }
     private void OnMoveDown(InputAction.CallbackContext input)
     {
+        if (stopped) return;
         NextTurn.Invoke(PlayerAction.MOVE_DOWN);
     }
     private void OnMoveLeft(InputAction.CallbackContext input)
     {
+        if (stopped) return;
         NextTurn.Invoke(PlayerAction.MOVE_LEFT);
     }
     private void OnMoveRight(InputAction.CallbackContext input)
     {
+        if (stopped) return;
         NextTurn.Invoke(PlayerAction.MOVE_RIGHT);
     }
     private void OnAttack(InputAction.CallbackContext input)
     {
+        if (stopped) return;
         NextTurn.Invoke(PlayerAction.ATTACK);
+    }
+
+    public void Stop()
+    {
+        stopped = true;
+    }
+
+    public void Resume()
+    {
+        stopped = false;
     }
 }
 

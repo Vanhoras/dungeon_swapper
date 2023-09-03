@@ -17,6 +17,7 @@ public class GridController : MonoBehaviour
     private int tilesCountY;
 
     private Tile[,] tiles;
+    private Obstacle[,] obstacles;
 
     private void Awake()
     {
@@ -30,6 +31,7 @@ public class GridController : MonoBehaviour
         }
 
         tiles = new Tile[tilesCountX, tilesCountY];
+        obstacles = new Obstacle[tilesCountX, tilesCountY];
     }
 
     public void AddTile(Tile tile)
@@ -42,6 +44,94 @@ public class GridController : MonoBehaviour
     public Tile GetTileAtCoord(Coords coords)
     {
         return tiles[coords.X, coords.Y];
+    }
+
+    public void RemoveObstacle(Obstacle obstacle)
+    {
+        Coords obstacleCoords = DetermineCoords(obstacle.transform);
+
+        obstacles[obstacleCoords.X, obstacleCoords.Y] = null;
+    }
+
+    public void AddObstacle(Obstacle obstacle)
+    {
+        Coords obstacleCoords = DetermineCoords(obstacle.transform);
+
+        obstacles[obstacleCoords.X, obstacleCoords.Y] = obstacle;
+    }
+
+    public Obstacle GetObstacleAtCoord(Coords coords)
+    {
+        return obstacles[coords.X, coords.Y];
+    }
+
+    public Obstacle FindObstacleInDirection(Coords coords, Direction direction)
+    {
+        bool hitCover = false;
+
+        int y;
+        int x;
+
+        switch (direction)
+        {
+            case Direction.UP:
+                y = coords.Y - 1;
+                while(!hitCover && y > 0)
+                {
+                    Coords currentCoords = new Coords(coords.X, y);
+                    Obstacle obstacle = GetObstacleAtCoord(currentCoords);
+
+                    if (obstacle != null) return obstacle;
+
+                    hitCover = GetTileAtCoord(currentCoords).IsCover();
+
+                    y--;
+                }
+                break;
+            case Direction.DOWN:
+                y = coords.Y + 1;
+                while (!hitCover && y < tilesCountY)
+                {
+                    Coords currentCoords = new Coords(coords.X, y);
+                    Obstacle obstacle = GetObstacleAtCoord(currentCoords);
+
+                    if (obstacle != null) return obstacle;
+
+                    hitCover = GetTileAtCoord(currentCoords).IsCover();
+
+                    y++;
+                }
+                break;
+            case Direction.LEFT:
+                x = coords.X - 1;
+                while (!hitCover && x > 0)
+                {
+                    Coords currentCoords = new Coords(x, coords.Y);
+                    Obstacle obstacle = GetObstacleAtCoord(currentCoords);
+
+                    if (obstacle != null) return obstacle;
+
+                    hitCover = GetTileAtCoord(currentCoords).IsCover();
+
+                    x--;
+                }
+                break;
+            case Direction.RIGHT:
+                x = coords.X + 1;
+                while (!hitCover && x < tilesCountX)
+                {
+                    Coords currentCoords = new Coords(x, coords.Y);
+                    Obstacle obstacle = GetObstacleAtCoord(currentCoords);
+
+                    if (obstacle != null) return obstacle;
+
+                    hitCover = GetTileAtCoord(currentCoords).IsCover();
+
+                    x++;
+                }
+                break;
+        }
+        return null;
     }
 
     // Only works when y coordinates are negative.
@@ -83,4 +173,12 @@ public struct Coords
     public int Y { get; }
 
     public override string ToString() => $"({X}, {Y})";
+}
+
+public enum Direction
+{
+    UP,
+    DOWN,
+    LEFT,
+    RIGHT
 }

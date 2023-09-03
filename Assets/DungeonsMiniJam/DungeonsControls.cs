@@ -121,7 +121,7 @@ public partial class @DungeonsControls: IInputActionCollection2, IDisposable
                 {
                     ""name"": """",
                     ""id"": ""461d7686-c70c-4a8a-81c1-05a438686f17"",
-                    ""path"": ""<Keyboard>/d"",
+                    ""path"": ""<Keyboard>/a"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
@@ -143,7 +143,7 @@ public partial class @DungeonsControls: IInputActionCollection2, IDisposable
                 {
                     ""name"": """",
                     ""id"": ""fc4b55a7-e930-4835-b415-6d841f235a0b"",
-                    ""path"": ""<Keyboard>/a"",
+                    ""path"": ""<Keyboard>/d"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
