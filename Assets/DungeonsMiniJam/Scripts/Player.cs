@@ -7,9 +7,13 @@ public class Player : MonoBehaviour
 
     private Direction direction;
 
+    private Animator animator;
+
 
     private void Start()
     {
+        animator = GetComponent<Animator>();
+
         TurnTimeController.instance.NextTurn += OnNextTurn;
 
         coords = GridController.instance.DetermineCoords(this.transform);
@@ -45,7 +49,7 @@ public class Player : MonoBehaviour
 
     private void MoveToCoords(Coords newCoords, Direction newDirection)
     {
-        direction = newDirection;
+        SetDirection(newDirection);
 
         bool tileWalkable = GridController.instance.GetTileAtCoord(newCoords).IsWalkable();
         Obstacle obstacle = GridController.instance.GetObstacleAtCoord(newCoords);
@@ -58,6 +62,36 @@ public class Player : MonoBehaviour
 
         coords = newCoords;
         transform.position = GridController.instance.GetPositionOfCoord(newCoords);
+    }
+
+    private void SetDirection(Direction newDirection)
+    {
+        direction = newDirection;
+
+        switch (newDirection)
+        {
+            case Direction.UP:
+                animator.SetBool("Up", true);
+                animator.SetBool("Down", false);
+                transform.transform.eulerAngles = new Vector3(transform.rotation.x, 0, transform.rotation.z);
+                break;
+            case Direction.DOWN:
+                animator.SetBool("Up", false);
+                animator.SetBool("Down", true);
+                transform.transform.eulerAngles = new Vector3(transform.rotation.x, 0, transform.rotation.z);
+                break;
+            case Direction.LEFT:
+                animator.SetBool("Up", false);
+                animator.SetBool("Down", false);
+                transform.transform.eulerAngles = new Vector3(transform.rotation.x, 180, transform.rotation.z);
+                break;
+            case Direction.RIGHT:
+                animator.SetBool("Up", false);
+                animator.SetBool("Down", false);
+                transform.transform.eulerAngles = new Vector3(transform.rotation.x, 0, transform.rotation.z);
+                break;
+        }
+        
     }
 
     private void Swap()
