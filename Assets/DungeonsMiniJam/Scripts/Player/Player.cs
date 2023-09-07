@@ -46,6 +46,17 @@ public class Player : MonoBehaviour
         TurnController.instance.PlayerStartTurn -= OnNextTurn;
     }
 
+    public Coords GetCoords()
+    {
+        return coords;
+    }
+
+    public void Kill()
+    {
+        animator.SetTrigger("Death");
+        Tutorial.instance.ShowTutorial();
+    }
+
     private void OnNextTurn(PlayerAction action)
     {
 
@@ -77,13 +88,13 @@ public class Player : MonoBehaviour
 
         if ( !(tileWalkable && obstacleWalkable))
         {
-            TurnController.instance.EndPlayerTurn(coords);
+            TurnController.instance.EndPlayerTurn(this);
             return;
         }
 
         coords = newCoords;
         transform.position = GridController.instance.GetPositionOfCoord(newCoords);
-        TurnController.instance.EndPlayerTurn(coords);
+        TurnController.instance.EndPlayerTurn(this);
     }
 
     private void SetDirection(Direction newDirection)
@@ -162,7 +173,7 @@ public class Player : MonoBehaviour
 
         if (obstacle == null)
         {
-            TurnController.instance.EndPlayerTurn(coords);
+            TurnController.instance.EndPlayerTurn(this);
             return;
         }
 

@@ -1,18 +1,62 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
-public class SkeletonWarrior : MonoBehaviour
+public class SkeletonWarrior : Enemy
 {
-    // Start is called before the first frame update
-    void Start()
+    private new void Start()
     {
-        
+        base.Start();
+        TurnController.instance.PlayerEndTurn += OnNextTurn;
     }
 
-    // Update is called once per frame
-    void Update()
+    private void OnDestroy()
     {
-        
+        TurnController.instance.PlayerEndTurn -= OnNextTurn;
+    }
+
+
+    private void OnNextTurn(Player player)
+    {
+        Coords playerCoords = player.GetCoords();
+
+        if (playerCoords.X == coords.X && playerCoords.Y == coords.Y - 1)
+        {
+            directionFaced = Direction.UP;
+            animator.SetBool("Up", true);
+            animator.SetBool("Down", false);
+            transform.transform.eulerAngles = new Vector3(transform.rotation.x, 0, transform.rotation.z);
+            Attack(player);
+        }
+        else if (playerCoords.X == coords.X && playerCoords.Y == coords.Y + 1)
+        {
+            directionFaced = Direction.DOWN;
+            animator.SetBool("Up", false);
+            animator.SetBool("Down", true);
+            transform.transform.eulerAngles = new Vector3(transform.rotation.x, 0, transform.rotation.z);
+            Attack(player);
+        }
+        else if (playerCoords.X == coords.X - 1 && playerCoords.Y == coords.Y)
+        {
+            directionFaced = Direction.LEFT;
+            animator.SetBool("Up", false);
+            animator.SetBool("Down", false);
+            transform.transform.eulerAngles = new Vector3(transform.rotation.x, 180, transform.rotation.z);
+            Attack(player);
+        }
+        else if (playerCoords.X == coords.X + 1 && playerCoords.Y == coords.Y)
+        {
+            directionFaced = Direction.RIGHT;
+            animator.SetBool("Up", false);
+            animator.SetBool("Down", false);
+            transform.transform.eulerAngles = new Vector3(transform.rotation.x, 0, transform.rotation.z);
+            Attack(player);
+        }
+    }
+
+    private void Attack(Player player)
+    {
+        TurnController.instance.Stop();
+        animator.SetTrigger("Attack");
+
+        player.Kill();
     }
 }

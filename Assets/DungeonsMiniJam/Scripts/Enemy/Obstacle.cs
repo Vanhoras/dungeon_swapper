@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class Obstacle : MonoBehaviour
+public abstract class Obstacle : MonoBehaviour
 {
     [SerializeField]
     private bool walkable;
@@ -8,9 +8,9 @@ public class Obstacle : MonoBehaviour
     [SerializeField]
     private bool cover;
 
-    private Coords coords;
+    protected Coords coords;
 
-    private void Start()
+    protected void Start()
     {
         GridController.instance.AddObstacle(this);
 

@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 4181393816342638051}
   - component: {fileID: 3984520349421518580}
   - component: {fileID: 1967674328022504159}
-  - component: {fileID: 2498518553883901404}
+  - component: {fileID: 56783936341170933}
   m_Layer: 0
   m_Name: Skeleton_Warrior
   m_TagString: Untagged
@@ -29,8 +29,8 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
+  m_LocalScale: {x: 2, y: 2, z: 2}
+  m_ConstrainProportionsScale: 1
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -107,7 +107,7 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
---- !u!114 &2498518553883901404
+--- !u!114 &56783936341170933
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -116,8 +116,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 4554615608469317166}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 13e0c4938152bf746a9654b10dd36c2e, type: 3}
+  m_Script: {fileID: 11500000, guid: 603d72711c5c5d3459ab573e221b34d8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   walkable: 0
   cover: 1
+  startDirectionFaced: 1

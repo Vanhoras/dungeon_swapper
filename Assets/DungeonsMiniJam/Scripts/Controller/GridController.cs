@@ -1,4 +1,3 @@
-using Unity.VisualScripting;
 using UnityEngine;
 
 public class GridController : MonoBehaviour
@@ -186,12 +185,4 @@ public struct Coords
     {
         return (X == p.X && Y == p.Y);
     }
-}
-
-public enum Direction
-{
-    UP,
-    DOWN,
-    LEFT,
-    RIGHT
 }

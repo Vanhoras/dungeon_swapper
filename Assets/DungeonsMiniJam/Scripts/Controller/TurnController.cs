@@ -8,8 +8,8 @@ public class TurnController : MonoBehaviour
     public delegate void PlayerActionDelegate(PlayerAction action);
     public event PlayerActionDelegate PlayerStartTurn;
 
-    public delegate void PlayerPositionDelegate(Coords playerCoords);
-    public event PlayerPositionDelegate PlayerEndTurn;
+    public delegate void PlayerDelegate(Player player);
+    public event PlayerDelegate PlayerEndTurn;
 
     private DungeonsControls inputActions;
 
@@ -20,7 +20,6 @@ public class TurnController : MonoBehaviour
         if (instance == null)
         {
             instance = this;
-            DontDestroyOnLoad(gameObject);
         }
         else
         {
@@ -84,9 +83,9 @@ public class TurnController : MonoBehaviour
         stopped = false;
     }
 
-    public void EndPlayerTurn(Coords playerCoords)
+    public void EndPlayerTurn(Player player)
     {
-        PlayerEndTurn.Invoke(playerCoords);
+        PlayerEndTurn.Invoke(player);
     }
 }
 

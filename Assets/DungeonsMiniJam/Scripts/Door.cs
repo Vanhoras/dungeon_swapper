@@ -20,9 +20,9 @@ public class Door : MonoBehaviour
     }
 
 
-    private void OnNextTurn(Coords playerCoords)
+    private void OnNextTurn(Player player)
     {
-        if (coords.IsSame(playerCoords))
+        if (coords.IsSame(player.GetCoords()))
         {
             SceneManager.LoadScene(scene);
         }
