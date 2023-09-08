@@ -128,11 +128,7 @@ public class Player : MonoBehaviour
 
     private void StartSwap()
     {
-        Debug.Log("StartSwap: " + direction);
-
         GameObject objectHit = GridController.instance.FindObstacleInDirection(coords, direction);
-
-        Debug.Log("objectHit", objectHit);
 
         if (objectHit == null) return;
 
@@ -141,9 +137,6 @@ public class Player : MonoBehaviour
         Vector3 projectileGoal = objectHit.transform.position;
 
         Vector3 startPosition = projectileSpawnRight;
-
-        
-        Debug.Log("projectileGoal x: " + projectileGoal.x + " y: "  + projectileGoal.y + " z: " + projectileGoal.z);
 
         switch (direction)
         {
@@ -161,15 +154,12 @@ public class Player : MonoBehaviour
                 break;
         }
 
-        Debug.Log("startPosition x: " + startPosition.x + " y: " + startPosition.y + " z: " + startPosition.z);
-
         StartCoroutine(MoveSwapProjectile(projectileGoal, transform.TransformPoint(startPosition), obstacle));
 
     }
 
     private void FinishSwap(Obstacle obstacle)
     {
-        Debug.Log("FinishSwap: " + direction);
 
         if (obstacle == null)
         {
@@ -186,7 +176,6 @@ public class Player : MonoBehaviour
 
     private IEnumerator MoveSwapProjectile(Vector3 goal, Vector3 startLocation, Obstacle obstacle)
     {
-        Debug.Log("MoveSwapProjectile");
         TurnController.instance.Stop();
         GameObject projectile = Instantiate(projectilePrefab, startLocation, Quaternion.identity);
 

@@ -16,10 +16,10 @@ public abstract class Enemy : Obstacle
         base.Start();
         animator = GetComponent<Animator>();
 
-        FacceDirection(startDirectionFaced);
+        FaceDirection(startDirectionFaced);
     }
 
-    protected void FacceDirection(Direction newDirection)
+    protected void FaceDirection(Direction newDirection)
     {
         directionFaced = newDirection;
 

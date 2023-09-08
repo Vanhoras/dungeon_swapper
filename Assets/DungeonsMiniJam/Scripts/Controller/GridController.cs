@@ -34,6 +34,16 @@ public class GridController : MonoBehaviour
         obstacles = new Obstacle[tilesCountX, tilesCountY];
     }
 
+    public int GetTilesCountX()
+    {
+        return tilesCountX;
+    }
+
+    public int GetTilesCountY()
+    {
+        return tilesCountY;
+    }
+
     public void AddTile(Tile tile)
     {
         Coords tileCoords = DetermineCoords(tile.transform);
@@ -139,6 +149,19 @@ public class GridController : MonoBehaviour
                 break;
         }
         return null;
+    }
+
+    public bool IsCoordsCover(Coords coords)
+    {
+        Obstacle obstacle = GetObstacleAtCoord(coords);
+
+        if (obstacle != null && obstacle.IsCover()) return true;
+
+        Tile tile = GetTileAtCoord(coords);
+
+        if (tile != null && tile.IsCover()) return true;
+
+        return false;
     }
 
     // Only works when y coordinates are negative.

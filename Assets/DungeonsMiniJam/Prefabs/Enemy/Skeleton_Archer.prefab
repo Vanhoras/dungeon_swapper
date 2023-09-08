@@ -122,3 +122,8 @@ MonoBehaviour:
   walkable: 0
   cover: 1
   startDirectionFaced: 1
+  arrowPrefabUp: {fileID: 2193684284737902877, guid: aada36d74fd81db418ddb00d4909a1eb, type: 3}
+  arrowPrefabDown: {fileID: 643317202935446912, guid: 5863b315ec3603a479d9d05ad91e232f, type: 3}
+  arrowPrefabRight: {fileID: 1000651570035926694, guid: 9105f4201b1293541acc580b10cb08ee, type: 3}
+  arrowPrefabLeft: {fileID: 6237000661482121572, guid: 1e12ce4402575f640bd4154b66328d5b, type: 3}
+  arrowSpeed: 4
