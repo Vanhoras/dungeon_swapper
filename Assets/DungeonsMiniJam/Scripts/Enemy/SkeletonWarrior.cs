@@ -16,6 +16,9 @@ public class SkeletonWarrior : Enemy
 
     private void OnNextTurn(Player player)
     {
+        if (dead) return;
+
+
         Coords playerCoords = player.GetCoords();
 
         if (playerCoords.X == coords.X && playerCoords.Y == coords.Y - 1)
@@ -57,6 +60,6 @@ public class SkeletonWarrior : Enemy
         TurnController.instance.Stop();
         animator.SetTrigger("Attack");
 
-        player.Kill();
+        player.Die();
     }
 }

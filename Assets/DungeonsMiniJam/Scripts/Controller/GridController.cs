@@ -78,75 +78,37 @@ public class GridController : MonoBehaviour
     public GameObject FindObstacleInDirection(Coords coords, Direction direction)
     {
         Tile tempTile;
-        int y;
-        int x;
+        int y = coords.Y;
+        int x = coords.X;
 
-        switch (direction)
+        while (y > -1 && y < tilesCountY
+            && x > -1 && x < tilesCountX)
         {
-            case Direction.UP:
-                y = coords.Y - 1;
-                while(y > -1)
-                {
-                    Coords currentCoords = new Coords(coords.X, y);
-                    Obstacle obstacle = GetObstacleAtCoord(currentCoords);
 
-                    if (obstacle != null) return obstacle.gameObject;
-
-                    tempTile = GetTileAtCoord(currentCoords);
-
-                    if (tempTile.IsCover()) return tempTile.gameObject;
-
+            switch (direction)
+            {
+                case Direction.UP:
                     y--;
-                }
-                break;
-            case Direction.DOWN:
-                y = coords.Y + 1;
-                while (y < tilesCountY)
-                {
-                    Coords currentCoords = new Coords(coords.X, y);
-                    Obstacle obstacle = GetObstacleAtCoord(currentCoords);
-
-                    if (obstacle != null) return obstacle.gameObject;
-
-                    tempTile = GetTileAtCoord(currentCoords);
-
-                    if (tempTile.IsCover()) return tempTile.gameObject;
-
+                    break;
+                case Direction.DOWN:
                     y++;
-                }
-                break;
-            case Direction.LEFT:
-                x = coords.X - 1;
-                while (x > -1)
-                {
-                    Coords currentCoords = new Coords(x, coords.Y);
-                    Obstacle obstacle = GetObstacleAtCoord(currentCoords);
-
-                    if (obstacle != null) return obstacle.gameObject;
-
-                    tempTile = GetTileAtCoord(currentCoords);
-
-                    if (tempTile.IsCover()) return tempTile.gameObject;
-
+                    break;
+                case Direction.LEFT:
                     x--;
-                }
-                break;
-            case Direction.RIGHT:
-                x = coords.X + 1;
-                while (x < tilesCountX)
-                {
-                    Coords currentCoords = new Coords(x, coords.Y);
-                    Obstacle obstacle = GetObstacleAtCoord(currentCoords);
-
-                    if (obstacle != null) return obstacle.gameObject;
-
-                    tempTile = GetTileAtCoord(currentCoords);
-
-                    if (tempTile.IsCover()) return tempTile.gameObject;
-
+                    break;
+                case Direction.RIGHT:
                     x++;
-                }
-                break;
+                    break;
+            }
+
+            Coords currentCoords = new Coords(x, y);
+            Obstacle obstacle = GetObstacleAtCoord(currentCoords);
+
+            if (obstacle != null) return obstacle.gameObject;
+
+            tempTile = GetTileAtCoord(currentCoords);
+
+            if (tempTile.IsCover()) return tempTile.gameObject;
         }
         return null;
     }
@@ -188,24 +150,5 @@ public class GridController : MonoBehaviour
         int coordY = Mathf.Abs((int)(y / tileHeight));
 
         return new Coords(coordX, coordY);
-    }
-}
-
-public struct Coords
-{
-    public Coords(int x, int y)
-    {
-        X = x;
-        Y = y;
-    }
-
-    public int X { get; }
-    public int Y { get; }
-
-    public override string ToString() => $"({X}, {Y})";
-
-    public bool IsSame(Coords p)
-    {
-        return (X == p.X && Y == p.Y);
     }
 }

@@ -19,6 +19,14 @@ public abstract class Enemy : Obstacle
         FaceDirection(startDirectionFaced);
     }
 
+    public void Die()
+    {
+        dead = true;
+        animator.SetTrigger("Death");
+
+        RemoveAsObstacle();
+    }
+
     protected void FaceDirection(Direction newDirection)
     {
         directionFaced = newDirection;

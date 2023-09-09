@@ -14,9 +14,13 @@ public class SkeletonArcher : Enemy
     private GameObject arrowPrefabLeft;
 
     [SerializeField]
+    private GameObject exclamationPoint;
+
+    [SerializeField]
     private float arrowSpeed;
 
     private bool aiming = false;
+    private bool notice = false;
 
     private new void Start()
     {
@@ -32,8 +36,10 @@ public class SkeletonArcher : Enemy
 
     private void OnNextTurn(Player player)
     {
-        GameObject playerOrCover = GetPlayerOrCoverOnPath(player, directionFaced);
+        if (dead) return;
 
+
+        GameObject playerOrCover = GetPlayerOrCoverOnPath(player, directionFaced);
         if (playerOrCover == null) return;
 
         if (aiming)
@@ -43,78 +49,87 @@ public class SkeletonArcher : Enemy
 
             StartCoroutine(ShootArrow(playerOrCover.transform.position, GridController.instance.GetPositionOfCoord(coords)));
 
+            
             if (playerOrCover.GetComponent<Player>() != null)
             {
-                Hit(player);
+                HitPlayer(player);
+                return;
+            }
+
+            Enemy enemy = playerOrCover.GetComponent<Enemy>();
+            if (enemy != null)
+            {
+                enemy.Die();
             }
 
             return;
         } 
 
+        if (notice)
+        {
+            Aim();
+            return;
+        }
+
         if (playerOrCover.GetComponent<Player>() != null)
         {
-            aiming = true;
-            animator.SetTrigger("Aim");
+            Notice();
         }
     }
 
 
+    private void Notice()
+    {
+        notice = true;
+        exclamationPoint.SetActive(true);
+    }
+
+    private void Aim()
+    {
+        notice = false;
+        exclamationPoint.SetActive(false);
+
+        aiming = true;
+        animator.SetTrigger("Aim");
+    }
+
+    private void HitPlayer(Player player)
+    {
+        TurnController.instance.Stop();
+
+        player.Die();
+    }
+
 
     private GameObject GetPlayerOrCoverOnPath(Player player, Direction direction)
     {
-        int y;
-        int x;
+        int y = coords.Y;
+        int x = coords.X;
 
-        switch (direction)
+        while (y > -1 && y < GridController.instance.GetTilesCountY()
+            && x > -1 && x < GridController.instance.GetTilesCountX())
         {
-            case Direction.UP:
-                y = coords.Y - 1;
-                while (y > -1)
-                {
-                    Coords currentCoords = new Coords(coords.X, y);
 
-                    GameObject playerOrObject = GetPlayerOrCoverAtCoords(currentCoords, player);
-                    if (playerOrObject != null) return playerOrObject;
-
+            switch (direction)
+            {
+                case Direction.UP:
                     y--;
-                }
-                break;
-            case Direction.DOWN:
-                y = coords.Y + 1;
-                while (y < GridController.instance.GetTilesCountY())
-                {
-                    Coords currentCoords = new Coords(coords.X, y);
-
-                    GameObject playerOrObject = GetPlayerOrCoverAtCoords(currentCoords, player);
-                    if (playerOrObject != null) return playerOrObject;
-
+                    break;
+                case Direction.DOWN:
                     y++;
-                }
-                break;
-            case Direction.LEFT:
-                x = coords.X - 1;
-                while (x > -1)
-                {
-                    Coords currentCoords = new Coords(x, coords.Y);
-
-                    GameObject playerOrObject = GetPlayerOrCoverAtCoords(currentCoords, player);
-                    if (playerOrObject != null) return playerOrObject;
-
-                     x--;
-                }
-                break;
-            case Direction.RIGHT:
-                x = coords.X + 1;
-                while (x < GridController.instance.GetTilesCountX())
-                {
-                    Coords currentCoords = new Coords(x, coords.Y);
-
-                    GameObject playerOrObject = GetPlayerOrCoverAtCoords(currentCoords, player);
-                    if (playerOrObject != null) return playerOrObject;
-
+                    break;
+                case Direction.LEFT:
+                    x--;
+                    break;
+                case Direction.RIGHT:
                     x++;
-                }
-                break;
+                    break;
+            }
+
+            Coords currentCoords = new Coords(x, y);
+
+            GameObject playerOrObject = GetPlayerOrCoverAtCoords(currentCoords, player);
+            if (playerOrObject != null) return playerOrObject;
         }
         return null;
     }
@@ -131,13 +146,6 @@ public class SkeletonArcher : Enemy
         if (coords.IsSame(player.GetCoords())) return player.gameObject;
 
         return null;
-    }
-
-    private void Hit(Player player)
-    {
-        TurnController.instance.Stop();
-        
-        player.Kill();
     }
 
     private IEnumerator ShootArrow(Vector3 goal, Vector3 startLocation)

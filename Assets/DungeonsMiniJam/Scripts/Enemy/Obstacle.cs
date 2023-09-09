@@ -3,10 +3,10 @@ using UnityEngine;
 public abstract class Obstacle : MonoBehaviour
 {
     [SerializeField]
-    private bool walkable;
+    protected bool walkable;
 
     [SerializeField]
-    private bool cover;
+    protected bool cover;
 
     protected Coords coords;
 
@@ -25,6 +25,13 @@ public abstract class Obstacle : MonoBehaviour
         coords = newCoords;
 
         GridController.instance.AddObstacle(this);
+    }
+
+    protected void RemoveAsObstacle()
+    {
+        cover = false;
+        walkable = true;
+        GridController.instance.RemoveObstacle(this);
     }
 
     public bool IsWalkable()

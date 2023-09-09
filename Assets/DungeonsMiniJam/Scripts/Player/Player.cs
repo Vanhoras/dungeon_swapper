@@ -51,7 +51,7 @@ public class Player : MonoBehaviour
         return coords;
     }
 
-    public void Kill()
+    public void Die()
     {
         animator.SetTrigger("Death");
         Tutorial.instance.ShowTutorial();
