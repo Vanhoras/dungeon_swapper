@@ -1,17 +1,28 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public class Door : MonoBehaviour
+public class Door : Tile
 {
     [SerializeField] 
     private string scene;
+
+    [SerializeField]
+    private bool hasLock = false;
+
+    [SerializeField]
+    private GameObject lockGameObject;
 
     private Coords coords;
 
     private void Start()
     {
+        base.Start();
+
         TurnController.instance.PlayerEndTurn += OnNextTurn;
         coords = GridController.instance.DetermineCoords(transform);
+
+        lockGameObject.SetActive(hasLock);
+        if (hasLock) walkable = false;
     }
 
     private void OnDestroy()
@@ -24,7 +35,17 @@ public class Door : MonoBehaviour
     {
         if (coords.IsSame(player.GetCoords()))
         {
-            SceneManager.LoadScene(scene);
+            if (!hasLock)
+            {
+                SceneManager.LoadScene(scene);
+            }
         }
+    }
+
+    public void Unlock()
+    {
+        lockGameObject.SetActive(false);
+        hasLock = false;
+        walkable = true;
     }
 }

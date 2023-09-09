@@ -3,12 +3,12 @@ using UnityEngine;
 public class Tile : MonoBehaviour
 {
     [SerializeField]
-    private bool walkable;
+    protected bool walkable;
 
     [SerializeField]
-    private bool cover;
+    protected bool cover;
 
-    private void Start()
+    protected void Start()
     {
         GridController.instance.AddTile(this);
     }
