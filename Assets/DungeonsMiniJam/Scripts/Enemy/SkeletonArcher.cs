@@ -26,11 +26,13 @@ public class SkeletonArcher : Enemy
     {
         base.Start();
         TurnController.instance.PlayerEndTurn += OnNextTurn;
+        TurnController.instance.PlayerStartTurn += OnEndTurn;
     }
 
     private void OnDestroy()
     {
         TurnController.instance.PlayerEndTurn -= OnNextTurn;
+        TurnController.instance.PlayerStartTurn -= OnEndTurn;
     }
 
 
@@ -182,5 +184,19 @@ public class SkeletonArcher : Enemy
 
         Destroy(projectile);
         yield return null;
+    }
+
+    public override void Die()
+    {
+        base.Die();
+
+        notice = false;
+        exclamationPoint.SetActive(false);
+    }
+
+    // fixes a bug, where the archer shoots on the next turn after death
+    private void OnEndTurn(PlayerAction action)
+    {
+        if (dead) aiming = false;
     }
 }

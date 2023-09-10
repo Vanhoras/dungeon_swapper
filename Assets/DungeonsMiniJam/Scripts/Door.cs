@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.SceneManagement;
 
 public class Door : Tile
@@ -8,6 +9,9 @@ public class Door : Tile
 
     [SerializeField]
     private bool hasLock = false;
+
+    [SerializeField]
+    private UnityEvent unityEvent;
 
     [SerializeField]
     private GameObject lockGameObject;
@@ -37,7 +41,9 @@ public class Door : Tile
         {
             if (!hasLock)
             {
-                SceneManager.LoadScene(scene);
+                unityEvent?.Invoke();
+
+                if (scene != "") SceneManager.LoadScene(scene);
             }
         }
     }

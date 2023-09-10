@@ -22,7 +22,7 @@ public abstract class Enemy : Obstacle
         sprite = GetComponent<SpriteRenderer>();
     }
 
-    public void Die()
+    public virtual void Die()
     {
         dead = true;
         animator.SetTrigger("Death");
