@@ -26,4 +26,10 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/DungeonsMiniJam/Scenes/Room7Scene.unity
     guid: d31d01bf5a4cb444bbbda16e80bb6abe
+  - enabled: 1
+    path: Assets/DungeonsMiniJam/Scenes/Room8Scene.unity
+    guid: 5d213fad43763e94e86708218ccdc640
+  - enabled: 1
+    path: Assets/DungeonsMiniJam/Scenes/Room9Scene.unity
+    guid: 66bbeedc5f7d666448c12b72281a3283
   m_configObjects: {}

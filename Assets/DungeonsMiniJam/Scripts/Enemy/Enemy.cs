@@ -11,12 +11,15 @@ public abstract class Enemy : Obstacle
 
     protected bool dead = false;
 
+    private SpriteRenderer sprite;
+
     protected new void Start()
     {
         base.Start();
         animator = GetComponent<Animator>();
 
         FaceDirection(startDirectionFaced);
+        sprite = GetComponent<SpriteRenderer>();
     }
 
     public void Die()
@@ -25,6 +28,8 @@ public abstract class Enemy : Obstacle
         animator.SetTrigger("Death");
 
         RemoveAsObstacle();
+
+        sprite.sortingLayerName = "corpse";
     }
 
     protected void FaceDirection(Direction newDirection)

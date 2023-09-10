@@ -36,9 +36,6 @@ public class SkeletonArcher : Enemy
 
     private void OnNextTurn(Player player)
     {
-        if (dead) return;
-
-
         GameObject playerOrCover = GetPlayerOrCoverOnPath(player, directionFaced);
         if (playerOrCover == null) return;
 
@@ -63,7 +60,11 @@ public class SkeletonArcher : Enemy
             }
 
             return;
-        } 
+        }
+
+
+        if (dead) return;
+
 
         if (notice)
         {
