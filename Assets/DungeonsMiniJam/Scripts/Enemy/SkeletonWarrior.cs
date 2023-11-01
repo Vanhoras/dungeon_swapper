@@ -5,12 +5,12 @@ public class SkeletonWarrior : Enemy
     private new void Start()
     {
         base.Start();
-        TurnController.instance.PlayerEndTurn += OnNextTurn;
+        TurnController.instance.EnemyTurn += OnNextTurn;
     }
 
     private void OnDestroy()
     {
-        TurnController.instance.PlayerEndTurn -= OnNextTurn;
+        TurnController.instance.EnemyTurn -= OnNextTurn;
     }
 
 

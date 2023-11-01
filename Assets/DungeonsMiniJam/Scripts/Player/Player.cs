@@ -1,7 +1,7 @@
 using System.Collections;
 using UnityEngine;
 
-public class Player : MonoBehaviour
+public class Player : MonoBehaviour, ISaveable
 {
 
     [SerializeField]
@@ -23,38 +23,75 @@ public class Player : MonoBehaviour
     private Vector3 projectileSpawnLeft;
 
 
-    private Coords coords;
-
-    private Direction direction;
+    private PlayerState state;
 
     private Animator animator;
 
 
     private void Start()
     {
+        StepController.instance.AddSaveable(this, GetInstanceID());
+
         animator = GetComponent<Animator>();
 
-        TurnController.instance.PlayerStartTurn += OnNextTurn;
+        TurnController.instance.PlayerTurn += OnNextTurn;
 
-        coords = GridController.instance.DetermineCoords(this.transform);
 
-        direction = Direction.RIGHT;
+        state.coords = GridController.instance.DetermineCoords(this.transform);
+        state.direction = Direction.RIGHT;
+        state.dead = false;
     }
 
     private void OnDestroy()
     {
-        TurnController.instance.PlayerStartTurn -= OnNextTurn;
+        TurnController.instance.PlayerTurn -= OnNextTurn;
+    }
+
+    public State GetState()
+    {
+        return state;
+    }
+
+    public void SetState(State state)
+    {
+        if (state == null || state is not PlayerState) return;
+
+        PlayerState newState = (PlayerState) state;
+
+        if (this.state.dead && !newState.dead)
+        {
+            Revive();
+        }
+
+        this.state = newState;
+
+        transform.position = GridController.instance.GetPositionOfCoord(this.state.coords);
+        SetDirection(this.state.direction);
     }
 
     public Coords GetCoords()
     {
-        return coords;
+        return state.coords;
     }
 
     public void Die()
     {
+        TurnController.instance.Stop();
+        TurnController.instance.GameOver = true;
+
+        state.dead = true;
         animator.SetTrigger("Death");
-        Tutorial.instance.ShowTutorial();
+        Tutorial.instance.FlickerResetTutorial();
+    }
+
+    public void Revive()
+    {
+        state.dead = false;
+        animator.SetTrigger("Revive");
+        Tutorial.instance.StopFlickerResetTutorial();
+
+        TurnController.instance.Resume();
+        TurnController.instance.GameOver = false;
     }
 
     private void OnNextTurn(PlayerAction action)
@@ -65,16 +102,16 @@ public class Player : MonoBehaviour
             StartSwap();
         } else if (action == PlayerAction.MOVE_UP) 
         {
-            MoveToCoords(new Coords(coords.X, coords.Y - 1), Direction.UP);
+            MoveToCoords(new Coords(state.coords.X, state.coords.Y - 1), Direction.UP);
         } else if (action == PlayerAction.MOVE_DOWN)
         {
-            MoveToCoords(new Coords(coords.X, coords.Y + 1), Direction.DOWN);
+            MoveToCoords(new Coords(state.coords.X, state.coords.Y + 1), Direction.DOWN);
         } else if (action == PlayerAction.MOVE_LEFT)
         {
-            MoveToCoords(new Coords(coords.X - 1, coords.Y), Direction.LEFT);
+            MoveToCoords(new Coords(state.coords.X - 1, state.coords.Y), Direction.LEFT);
         }  else if (action == PlayerAction.MOVE_RIGHT)
         {
-            MoveToCoords(new Coords(coords.X + 1, coords.Y), Direction.RIGHT);
+            MoveToCoords(new Coords(state.coords.X + 1, state.coords.Y), Direction.RIGHT);
         }
     }
 
@@ -92,14 +129,14 @@ public class Player : MonoBehaviour
             return;
         }
 
-        coords = newCoords;
+        state.coords = newCoords;
         transform.position = GridController.instance.GetPositionOfCoord(newCoords);
         TurnController.instance.EndPlayerTurn(this);
     }
 
     private void SetDirection(Direction newDirection)
     {
-        direction = newDirection;
+        state.direction = newDirection;
 
         switch (newDirection)
         {
@@ -128,7 +165,7 @@ public class Player : MonoBehaviour
 
     private void StartSwap()
     {
-        GameObject objectHit = GridController.instance.FindObstacleInDirection(coords, direction);
+        GameObject objectHit = GridController.instance.FindObstacleInDirection(state.coords, state.direction);
 
         if (objectHit == null) return;
 
@@ -138,7 +175,7 @@ public class Player : MonoBehaviour
 
         Vector3 startPosition = projectileSpawnRight;
 
-        switch (direction)
+        switch (state.direction)
         {
             case Direction.UP:
                 startPosition = projectileSpawnUp;
@@ -169,9 +206,9 @@ public class Player : MonoBehaviour
 
         Coords obstacleCoords = obstacle.GetCoords();
 
-        obstacle.Swap(coords);
+        obstacle.MoveTo(state.coords);
 
-        MoveToCoords(obstacleCoords, direction);
+        MoveToCoords(obstacleCoords, state.direction);
     }
 
     private IEnumerator MoveSwapProjectile(Vector3 goal, Vector3 startLocation, Obstacle obstacle)
@@ -193,6 +230,13 @@ public class Player : MonoBehaviour
         FinishSwap(obstacle);
         yield return null;
     }
+}
+
+public struct PlayerState : State
+{
+    public Coords coords;
+    public Direction direction;
+    public bool dead;
 }
 
 

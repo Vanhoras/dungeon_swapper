@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -5,15 +6,24 @@ public class TurnController : MonoBehaviour
 {
     public static TurnController instance { get; private set; }
 
-    public delegate void PlayerActionDelegate(PlayerAction action);
-    public event PlayerActionDelegate PlayerStartTurn;
+    // save game
+    public delegate void StarTurnDelegate();
+    public event StarTurnDelegate StartTurn;
 
+    // player acts
+    public delegate void PlayerActionDelegate(PlayerAction action);
+    public event PlayerActionDelegate PlayerTurn;
+
+    // enemies act
     public delegate void PlayerDelegate(Player player);
-    public event PlayerDelegate PlayerEndTurn;
+    public event PlayerDelegate EnemyTurn;
 
     private DungeonsControls inputActions;
 
-    private bool stopped;
+    private bool stopped = false;
+
+    [NonSerialized]
+    public bool GameOver = false;
 
     private void Awake()
     {
@@ -50,27 +60,32 @@ public class TurnController : MonoBehaviour
     private void OnMoveUp(InputAction.CallbackContext input)
     {
         if (stopped) return;
-        PlayerStartTurn.Invoke(PlayerAction.MOVE_UP);
+        StartTurn.Invoke();
+        PlayerTurn.Invoke(PlayerAction.MOVE_UP);
     }
     private void OnMoveDown(InputAction.CallbackContext input)
     {
         if (stopped) return;
-        PlayerStartTurn.Invoke(PlayerAction.MOVE_DOWN);
+        StartTurn.Invoke();
+        PlayerTurn.Invoke(PlayerAction.MOVE_DOWN);
     }
     private void OnMoveLeft(InputAction.CallbackContext input)
     {
         if (stopped) return;
-        PlayerStartTurn.Invoke(PlayerAction.MOVE_LEFT);
+        StartTurn.Invoke();
+        PlayerTurn.Invoke(PlayerAction.MOVE_LEFT);
     }
     private void OnMoveRight(InputAction.CallbackContext input)
     {
         if (stopped) return;
-        PlayerStartTurn.Invoke(PlayerAction.MOVE_RIGHT);
+        StartTurn.Invoke();
+        PlayerTurn.Invoke(PlayerAction.MOVE_RIGHT);
     }
     private void OnAttack(InputAction.CallbackContext input)
     {
         if (stopped) return;
-        PlayerStartTurn.Invoke(PlayerAction.ATTACK);
+        StartTurn.Invoke();
+        PlayerTurn.Invoke(PlayerAction.ATTACK);
     }
 
     public void Stop()
@@ -83,9 +98,14 @@ public class TurnController : MonoBehaviour
         stopped = false;
     }
 
+    public bool IsStopped()
+    {
+        return stopped;
+    }
+
     public void EndPlayerTurn(Player player)
     {
-        PlayerEndTurn.Invoke(player);
+        EnemyTurn.Invoke(player);
     }
 }
 

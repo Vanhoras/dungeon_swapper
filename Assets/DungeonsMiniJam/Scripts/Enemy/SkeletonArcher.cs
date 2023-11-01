@@ -25,16 +25,15 @@ public class SkeletonArcher : Enemy
     private new void Start()
     {
         base.Start();
-        TurnController.instance.PlayerEndTurn += OnNextTurn;
-        TurnController.instance.PlayerStartTurn += OnEndTurn;
+        TurnController.instance.EnemyTurn += OnNextTurn;
+        TurnController.instance.PlayerTurn += OnEndTurn;
     }
 
     private void OnDestroy()
     {
-        TurnController.instance.PlayerEndTurn -= OnNextTurn;
-        TurnController.instance.PlayerStartTurn -= OnEndTurn;
+        TurnController.instance.EnemyTurn -= OnNextTurn;
+        TurnController.instance.PlayerTurn -= OnEndTurn;
     }
-
 
     private void OnNextTurn(Player player)
     {
@@ -86,11 +85,15 @@ public class SkeletonArcher : Enemy
         notice = true;
         exclamationPoint.SetActive(true);
     }
-
-    private void Aim()
+    private void StopNotice()
     {
         notice = false;
         exclamationPoint.SetActive(false);
+    }
+
+    private void Aim()
+    {
+        StopNotice();
 
         aiming = true;
         animator.SetTrigger("Aim");
@@ -98,8 +101,6 @@ public class SkeletonArcher : Enemy
 
     private void HitPlayer(Player player)
     {
-        TurnController.instance.Stop();
-
         player.Die();
     }
 
@@ -190,13 +191,54 @@ public class SkeletonArcher : Enemy
     {
         base.Die();
 
-        notice = false;
-        exclamationPoint.SetActive(false);
+        StopNotice();
     }
 
     // fixes a bug, where the archer shoots on the next turn after death
     private void OnEndTurn(PlayerAction action)
     {
         if (dead) aiming = false;
+    }
+
+    public override State GetState()
+    {
+        SkeletonArcherState state = new(coords, dead, directionFaced, aiming, notice);
+
+        return state;
+    }
+
+    public override void SetState(State state)
+    {
+        if (state == null || state is not SkeletonArcherState) return;
+
+        SkeletonArcherState newState = (SkeletonArcherState)state;
+
+        EnemyState enemyState = new(newState.coords, newState.dead, newState.directionFaced);
+        base.SetState(enemyState);
+
+        if (!newState.notice && !newState.aiming)
+        {
+            StopNotice();
+        } else if (newState.notice)
+        {
+            Notice();
+            aiming = false;
+            animator.SetTrigger("StopAim");
+        } else if (newState.aiming)
+        {
+            Aim();
+        }
+    }
+}
+
+public class SkeletonArcherState : EnemyState
+{
+    public bool aiming;
+    public bool notice;
+
+    public SkeletonArcherState(Coords coords, bool dead, Direction directionFaced, bool aiming, bool notice) : base(coords, dead, directionFaced)
+    {
+        this.aiming = aiming;
+        this.notice = notice;
     }
 }

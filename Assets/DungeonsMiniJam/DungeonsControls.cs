@@ -187,6 +187,15 @@ public partial class @DungeonsControls: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""StepBack"",
+                    ""type"": ""Button"",
+                    ""id"": ""5c594383-916f-4566-86fc-aec801b1781b"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -198,6 +207,28 @@ public partial class @DungeonsControls: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""groups"": """",
                     ""action"": ""Reset"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""9f4c0a31-7f28-4e4b-b6f7-e352a942e45f"",
+                    ""path"": ""<Keyboard>/z"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""StepBack"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""8ab877bc-6078-4215-8a6c-9cb9721ae917"",
+                    ""path"": ""<Keyboard>/y"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""StepBack"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -216,6 +247,7 @@ public partial class @DungeonsControls: IInputActionCollection2, IDisposable
         // Global
         m_Global = asset.FindActionMap("Global", throwIfNotFound: true);
         m_Global_Reset = m_Global.FindAction("Reset", throwIfNotFound: true);
+        m_Global_StepBack = m_Global.FindAction("StepBack", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -356,11 +388,13 @@ public partial class @DungeonsControls: IInputActionCollection2, IDisposable
     private readonly InputActionMap m_Global;
     private List<IGlobalActions> m_GlobalActionsCallbackInterfaces = new List<IGlobalActions>();
     private readonly InputAction m_Global_Reset;
+    private readonly InputAction m_Global_StepBack;
     public struct GlobalActions
     {
         private @DungeonsControls m_Wrapper;
         public GlobalActions(@DungeonsControls wrapper) { m_Wrapper = wrapper; }
         public InputAction @Reset => m_Wrapper.m_Global_Reset;
+        public InputAction @StepBack => m_Wrapper.m_Global_StepBack;
         public InputActionMap Get() { return m_Wrapper.m_Global; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -373,6 +407,9 @@ public partial class @DungeonsControls: IInputActionCollection2, IDisposable
             @Reset.started += instance.OnReset;
             @Reset.performed += instance.OnReset;
             @Reset.canceled += instance.OnReset;
+            @StepBack.started += instance.OnStepBack;
+            @StepBack.performed += instance.OnStepBack;
+            @StepBack.canceled += instance.OnStepBack;
         }
 
         private void UnregisterCallbacks(IGlobalActions instance)
@@ -380,6 +417,9 @@ public partial class @DungeonsControls: IInputActionCollection2, IDisposable
             @Reset.started -= instance.OnReset;
             @Reset.performed -= instance.OnReset;
             @Reset.canceled -= instance.OnReset;
+            @StepBack.started -= instance.OnStepBack;
+            @StepBack.performed -= instance.OnStepBack;
+            @StepBack.canceled -= instance.OnStepBack;
         }
 
         public void RemoveCallbacks(IGlobalActions instance)
@@ -408,5 +448,6 @@ public partial class @DungeonsControls: IInputActionCollection2, IDisposable
     public interface IGlobalActions
     {
         void OnReset(InputAction.CallbackContext context);
+        void OnStepBack(InputAction.CallbackContext context);
     }
 }

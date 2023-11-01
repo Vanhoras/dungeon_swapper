@@ -8,16 +8,22 @@ public abstract class Obstacle : MonoBehaviour
     [SerializeField]
     protected bool cover;
 
-    protected Coords coords;
+    private bool originalWalkable;
+    private bool originalCover;
+
+    public Coords coords;
 
     protected void Start()
     {
         GridController.instance.AddObstacle(this);
 
         coords = GridController.instance.DetermineCoords(transform);
+
+        originalWalkable = walkable;
+        originalCover = cover;
     }
 
-    public void Swap(Coords newCoords)
+    public void MoveTo(Coords newCoords)
     {
         GridController.instance.RemoveObstacle(this);
 
@@ -34,6 +40,13 @@ public abstract class Obstacle : MonoBehaviour
         GridController.instance.RemoveObstacle(this);
     }
 
+    protected void ReAddAsObstacle()
+    {
+        cover = originalCover;
+        walkable = originalWalkable;
+        GridController.instance.AddObstacle(this);
+    }
+
     public bool IsWalkable()
     {
         return walkable;
@@ -47,5 +60,15 @@ public abstract class Obstacle : MonoBehaviour
     public Coords GetCoords()
     {
         return coords;
+    }
+}
+
+
+public class ObstacleState : State
+{
+    public Coords coords { get; set; }
+
+    public ObstacleState(Coords coords) {
+        this.coords = coords;
     }
 }

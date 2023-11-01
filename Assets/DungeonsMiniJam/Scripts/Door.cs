@@ -22,7 +22,7 @@ public class Door : Tile
     {
         base.Start();
 
-        TurnController.instance.PlayerEndTurn += OnNextTurn;
+        TurnController.instance.EnemyTurn += OnNextTurn;
         coords = GridController.instance.DetermineCoords(transform);
 
         lockGameObject.SetActive(hasLock);
@@ -31,7 +31,7 @@ public class Door : Tile
 
     private void OnDestroy()
     {
-        TurnController.instance.PlayerEndTurn -= OnNextTurn;
+        TurnController.instance.EnemyTurn -= OnNextTurn;
     }
 
 
@@ -53,5 +53,12 @@ public class Door : Tile
         lockGameObject.SetActive(false);
         hasLock = false;
         walkable = true;
+    }
+
+    public void Lock()
+    {
+        lockGameObject.SetActive(true);
+        hasLock = true;
+        walkable = false;
     }
 }
