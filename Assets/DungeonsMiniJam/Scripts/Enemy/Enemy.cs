@@ -95,9 +95,11 @@ public abstract class Enemy : Obstacle, ISaveable
             Revive();
         }
         
-
-        MoveTo(this.coords);
-        FaceDirection(this.directionFaced);
+        if (!dead)
+        {
+            MoveTo(this.coords);
+            FaceDirection(this.directionFaced);
+        }
     }
 }
 
